@@ -8,11 +8,10 @@ const HERO_BG = "/imagens/imagem-de-fundo-pa.png";
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen bg-black overflow-hidden flex items-center">
-      {/* Imagem de fundo */}
       <div className="absolute inset-0">
         <Image
           src={HERO_BG}
-          alt="Corretor apresentando empreendimento com PoligonoApp em totem digital"
+          alt="Painéis de LED em evento e campanha publicitária"
           fill
           priority
           className="object-cover object-center"
@@ -20,7 +19,6 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Overlay para legibilidade do texto */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/65 to-black/25" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
@@ -29,36 +27,21 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-2xl"
+          className="max-w-3xl"
         >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-orange font-semibold text-sm uppercase tracking-widest mb-6"
-          >
-            A plataforma que transforma empreendimentos em experiências de venda
-          </motion.p>
-
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-            Transforme seus empreendimentos em{" "}
-            <span className="text-gradient">experiências de venda inesquecíveis</span>.
+          <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-6">
+            Locação de Painéis de LED Indoor, Outdoor e Caminhão de LED
           </h1>
 
           <p className="text-lg md:text-xl text-white/75 mb-10 leading-relaxed">
-            Apresente empreendimentos com plantas interativas, perspectivas em alta qualidade,
-            mapas da região, vídeos, tour virtual e todas as informações que seu corretor
-            precisa em um único aplicativo.
+            Transforme seu evento, empresa ou campanha publicitária com painéis de alta
+            definição e caminhões de LED que geram impacto e atraem milhares de
+            visualizações.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a href="#contato" className="btn-primary">
-              Solicitar Demonstração
-            </a>
-            <a href="#recursos" className="btn-secondary">
-              Ver Apresentação
-            </a>
-          </div>
+          <a href="#contato" className="btn-primary inline-flex">
+            Solicitar Demonstração
+          </a>
         </motion.div>
       </div>
 
