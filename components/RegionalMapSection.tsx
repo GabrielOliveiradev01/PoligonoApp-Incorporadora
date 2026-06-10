@@ -173,18 +173,22 @@ function POIPin({
     >
       <div className="relative cursor-pointer group">
         {/* Pulso */}
-        <motion.span
-          className="absolute inset-0 rounded-full bg-orange/30"
-          animate={{ scale: [1, 2.2], opacity: [0.5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-          style={{ width: 28, height: 28, margin: -6 }}
-        />
-        <motion.span
-          className="absolute inset-0 rounded-full bg-orange/20"
-          animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
-          style={{ width: 28, height: 28, margin: -6 }}
-        />
+        {visible && (
+          <>
+            <motion.span
+              className="absolute inset-0 rounded-full bg-orange/30"
+              animate={{ scale: [1, 2.2], opacity: [0.5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+              style={{ width: 28, height: 28, margin: -6 }}
+            />
+            <motion.span
+              className="absolute inset-0 rounded-full bg-orange/20"
+              animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
+              style={{ width: 28, height: 28, margin: -6 }}
+            />
+          </>
+        )}
 
         <div
           className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full shadow-lg transition-all duration-300 ${
@@ -207,13 +211,26 @@ function POIPin({
 }
 
 export default function RegionalMapSection() {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [sectionRef, sectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.15,
+  });
+  const [mapRef, mapInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.55,
+    rootMargin: "-40px 0px -40px 0px",
+  });
   const [phase, setPhase] = useState(0);
   const [hoveredPoi, setHoveredPoi] = useState<string | null>(null);
   const [metricsVisible, setMetricsVisible] = useState(0);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!mapInView) return;
+
+    setAnimationStarted(true);
+    setPhase(0);
+    setMetricsVisible(0);
 
     const delays = [0, 400, 900, 1400, 1900, 2400, 2900];
     const timers = delays.map((delay, i) =>
@@ -224,19 +241,19 @@ export default function RegionalMapSection() {
     );
 
     return () => timers.forEach(clearTimeout);
-  }, [inView]);
+  }, [mapInView]);
 
   const buildingVisible = phase >= 1;
   const visiblePoiCount = Math.max(0, phase - 1);
 
   return (
-    <div className="mb-24" ref={ref}>
+    <div className="mb-24" ref={sectionRef}>
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
         {/* Texto + métricas */}
         <motion.div
           className="lg:col-span-4"
           initial={{ opacity: 0, x: -24 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
+          animate={sectionInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7 }}
         >
           <p className="text-orange font-semibold text-sm uppercase tracking-widest mb-4">
@@ -261,7 +278,11 @@ export default function RegionalMapSection() {
                 <motion.li
                   key={metric.label}
                   initial={{ opacity: 0, x: -12 }}
-                  animate={metricsVisible > i ? { opacity: 1, x: 0 } : { opacity: 0.25, x: 0 }}
+                  animate={
+                    metricsVisible > i
+                      ? { opacity: 1, x: 0 }
+                      : { opacity: animationStarted ? 0.2 : 0, x: 0 }
+                  }
                   transition={{ duration: 0.4, delay: i * 0.05 }}
                   className="flex items-center gap-3"
                 >
@@ -299,9 +320,10 @@ export default function RegionalMapSection() {
 
         {/* Mapa */}
         <motion.div
+          ref={mapRef}
           className="lg:col-span-8"
           initial={{ opacity: 0, x: 24 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
+          animate={mapInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.1 }}
         >
           <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/15 border border-black/8 bg-[#e8e4df]">
@@ -335,16 +357,18 @@ export default function RegionalMapSection() {
                   style={{ transformOrigin: `${CENTER.x}px ${CENTER.y}px` }}
                 >
                   <circle cx={CENTER.x} cy={CENTER.y} r="28" fill="#FF6A00" opacity="0.15" />
-                  <motion.circle
-                    cx={CENTER.x}
-                    cy={CENTER.y}
-                    r="22"
-                    fill="none"
-                    stroke="#FF6A00"
-                    strokeWidth="2"
-                    animate={{ r: [22, 30, 22], opacity: [0.6, 0, 0.6] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                  />
+                  {buildingVisible && (
+                    <motion.circle
+                      cx={CENTER.x}
+                      cy={CENTER.y}
+                      r="22"
+                      fill="none"
+                      stroke="#FF6A00"
+                      strokeWidth="2"
+                      animate={{ r: [22, 30, 22], opacity: [0.6, 0, 0.6] }}
+                      transition={{ duration: 2.5, repeat: Infinity }}
+                    />
+                  )}
                   <circle cx={CENTER.x} cy={CENTER.y} r="16" fill="#FF6A00" />
                   <circle cx={CENTER.x} cy={CENTER.y} r="12" fill="#FF8533" />
                 </motion.g>
