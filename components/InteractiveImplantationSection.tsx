@@ -2,34 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import {
-  Waves,
-  Dumbbell,
-  Baby,
-  Laptop,
-  PartyPopper,
-  FileText,
-  Tablet,
-  ArrowRight,
-  type LucideIcon,
-} from "lucide-react";
+import { useMotionActive } from "@/hooks/useMotionActive";
+import { FileText, Monitor, ArrowRight } from "lucide-react";
 
-type HighlightId =
-  | "tower-a"
-  | "tower-b"
-  | "tower-c"
-  | "leisure"
-  | "pool"
-  | "gym"
-  | "playground"
-  | "coworking"
-  | "party"
-  | null;
+type HighlightId = number | "centro" | null;
 
-interface Tower {
-  id: HighlightId;
+interface Bolotario {
+  id: number;
   label: string;
+  torre: string;
   floors: number;
   units: number;
   bedrooms: string;
@@ -40,254 +21,158 @@ interface Tower {
   h: number;
 }
 
-interface Hotspot {
-  id: HighlightId;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-  x: number;
-  y: number;
-  gradient: string;
-}
-
-const towers: Tower[] = [
-  {
-    id: "tower-a",
-    label: "Torre A",
-    floors: 24,
-    units: 192,
-    bedrooms: "2 e 3 Dormitórios",
-    status: "Em obras",
-    x: 12,
-    y: 18,
-    w: 22,
-    h: 34,
-  },
-  {
-    id: "tower-b",
-    label: "Torre B",
-    floors: 20,
-    units: 160,
-    bedrooms: "2 e 3 Dormitórios",
-    status: "Lançamento",
-    x: 39,
-    y: 14,
-    w: 22,
-    h: 30,
-  },
-  {
-    id: "tower-c",
-    label: "Torre C",
-    floors: 18,
-    units: 144,
-    bedrooms: "2 Dormitórios",
-    status: "Disponível",
-    x: 66,
-    y: 20,
-    w: 20,
-    h: 28,
-  },
+const bolotarios: Bolotario[] = [
+  { id: 1, label: "Bloco 1", torre: "Torre Norte A", floors: 24, units: 192, bedrooms: "2 e 3 dorms.", status: "Disponível", x: 10, y: 8, w: 16, h: 20 },
+  { id: 2, label: "Bloco 2", torre: "Torre Norte B", floors: 22, units: 176, bedrooms: "2 e 3 dorms.", status: "Disponível", x: 30, y: 6, w: 16, h: 20 },
+  { id: 3, label: "Bloco 3", torre: "Torre Norte C", floors: 20, units: 160, bedrooms: "2 dorms.", status: "Em obras", x: 50, y: 8, w: 16, h: 20 },
+  { id: 4, label: "Bloco 4", torre: "Torre Oeste", floors: 18, units: 144, bedrooms: "2 e 3 dorms.", status: "Lançamento", x: 6, y: 34, w: 15, h: 18 },
+  { id: 5, label: "Bloco 5", torre: "Torre Leste", floors: 18, units: 144, bedrooms: "2 dorms.", status: "Disponível", x: 79, y: 34, w: 15, h: 18 },
+  { id: 6, label: "Bloco 6", torre: "Torre Sul A", floors: 16, units: 128, bedrooms: "2 dorms.", status: "Disponível", x: 12, y: 68, w: 15, h: 18 },
+  { id: 7, label: "Bloco 7", torre: "Torre Sul B", floors: 16, units: 128, bedrooms: "2 e 3 dorms.", status: "Em obras", x: 32, y: 72, w: 15, h: 18 },
+  { id: 8, label: "Bloco 8", torre: "Torre Sul C", floors: 14, units: 112, bedrooms: "2 dorms.", status: "Disponível", x: 52, y: 68, w: 15, h: 18 },
+  { id: 9, label: "Bloco 9", torre: "Torre Sul D", floors: 14, units: 112, bedrooms: "2 dorms.", status: "Lançamento", x: 72, y: 72, w: 15, h: 18 },
 ];
 
-const hotspots: Hotspot[] = [
-  {
-    id: "pool",
-    label: "Piscina",
-    description: "Piscina adulto e infantil com deck molhado",
-    icon: Waves,
-    x: 28,
-    y: 62,
-    gradient: "from-cyan-500 to-blue-700",
-  },
-  {
-    id: "gym",
-    label: "Academia",
-    description: "Fitness completo com vista para o parque",
-    icon: Dumbbell,
-    x: 48,
-    y: 58,
-    gradient: "from-slate-600 to-slate-900",
-  },
-  {
-    id: "playground",
-    label: "Playground",
-    description: "Área kids com piso absorvente e brinquedos",
-    icon: Baby,
-    x: 68,
-    y: 65,
-    gradient: "from-emerald-500 to-green-700",
-  },
-  {
-    id: "coworking",
-    label: "Coworking",
-    description: "Salas de reunião e estações de trabalho",
-    icon: Laptop,
-    x: 22,
-    y: 78,
-    gradient: "from-amber-600 to-orange-800",
-  },
-  {
-    id: "party",
-    label: "Salão de Festas",
-    description: "Espaço gourmet com varanda e churrasqueira",
-    icon: PartyPopper,
-    x: 58,
-    y: 78,
-    gradient: "from-rose-500 to-red-800",
-  },
-];
-
-const DEMO_SEQUENCE: HighlightId[] = [
-  "tower-a",
-  "tower-b",
-  "tower-c",
-  "leisure",
-  "pool",
-  "gym",
-  "playground",
-  "coworking",
-  "party",
-];
+const DEMO_SEQUENCE: HighlightId[] = [1, 2, 3, 4, "centro", 5, 6, 7, 8, 9];
 
 function BlueprintBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      <svg className="absolute inset-0 w-full h-full opacity-[0.05]" xmlns="http://www.w3.org/2000/svg">
+      <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="arch-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#121212" strokeWidth="0.5" />
-          </pattern>
-          <pattern id="blueprint-lines" width="80" height="80" patternUnits="userSpaceOnUse">
-            <circle cx="40" cy="40" r="30" fill="none" stroke="#FF6A00" strokeWidth="0.3" />
-            <line x1="0" y1="40" x2="80" y2="40" stroke="#121212" strokeWidth="0.3" />
-            <line x1="40" y1="0" x2="40" y2="80" stroke="#121212" strokeWidth="0.3" />
+          <pattern id="impl-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+            <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#121212" strokeWidth="0.5" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#arch-grid)" />
-        <rect width="100%" height="100%" fill="url(#blueprint-lines)" />
+        <rect width="100%" height="100%" fill="url(#impl-grid)" />
       </svg>
-      <div className="absolute inset-0 bg-gradient-to-br from-orange/[0.03] via-transparent to-black/[0.02]" />
     </div>
   );
 }
 
-function ImplantationSVG({ activeId }: { activeId: HighlightId }) {
-  const isTowerActive = (id: HighlightId) => activeId === id;
-  const leisureActive = activeId === "leisure";
+function MasterPlanSVG({ activeId }: { activeId: HighlightId }) {
+  const centroActive = activeId === "centro";
 
   return (
     <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
-        <linearGradient id="grass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#5a8f6a" />
-          <stop offset="100%" stopColor="#3d6b4f" />
+        <linearGradient id="terrain" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#e8ebe4" />
+          <stop offset="100%" stopColor="#d4d9ce" />
         </linearGradient>
-        <linearGradient id="path" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#c4b89a" />
-          <stop offset="100%" stopColor="#a89878" />
+        <linearGradient id="grass-zone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#6b9e72" />
+          <stop offset="100%" stopColor="#4a7c59" />
         </linearGradient>
-        <linearGradient id="pool-water" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="pool-fill" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#0284c7" />
+          <stop offset="100%" stopColor="#0ea5e9" />
         </linearGradient>
-        <filter id="tower-glow">
-          <feDropShadow dx="0" dy="0" stdDeviation="1.5" floodColor="#FF6A00" floodOpacity="0.8" />
+        <filter id="block-glow">
+          <feDropShadow dx="0" dy="0" stdDeviation="1.2" floodColor="#FF6A00" floodOpacity="0.9" />
         </filter>
-        <filter id="soft-shadow">
-          <feDropShadow dx="0" dy="0.5" stdDeviation="0.8" floodColor="#000" floodOpacity="0.25" />
+        <filter id="map-shadow">
+          <feDropShadow dx="0" dy="0.4" stdDeviation="0.6" floodColor="#000" floodOpacity="0.2" />
         </filter>
       </defs>
 
       {/* Terreno */}
-      <rect x="2" y="2" width="96" height="96" rx="3" fill="url(#grass)" />
-      <rect x="6" y="52" width="88" height="42" rx="2" fill="#4a7c59" opacity="0.5" />
+      <rect x="1" y="1" width="98" height="98" rx="2" fill="url(#terrain)" stroke="#b8bfb0" strokeWidth="0.4" />
 
-      {/* Área de lazer */}
+      {/* Ruas / acessos */}
+      <path
+        d="M 0 50 L 22 50 L 28 44 L 72 44 L 78 50 L 100 50"
+        fill="none"
+        stroke="#c9c2b0"
+        strokeWidth="3"
+        opacity="0.7"
+      />
+      <path
+        d="M 50 0 L 50 28 M 50 72 L 50 100"
+        fill="none"
+        stroke="#c9c2b0"
+        strokeWidth="2.5"
+        opacity="0.5"
+      />
+      <ellipse cx="50" cy="50" rx="5" ry="3" fill="#d4cbb8" opacity="0.6" />
+
+      {/* Estacionamento */}
+      <rect x="24" y="30" width="8" height="12" rx="0.5" fill="#b0b8c4" opacity="0.35" />
+      <rect x="68" y="30" width="8" height="12" rx="0.5" fill="#b0b8c4" opacity="0.35" />
+      {[0, 1, 2].map((i) => (
+        <line key={`pl-${i}`} x1={25 + i * 2.5} y1="31" x2={25 + i * 2.5} y2="41" stroke="#8899aa" strokeWidth="0.3" opacity="0.5" />
+      ))}
+
+      {/* Área central de lazer */}
       <motion.rect
-        x="14"
-        y="54"
-        width="72"
-        height="36"
-        rx="2"
-        fill={leisureActive ? "#FF6A00" : "#6b9e7a"}
-        opacity={leisureActive ? 0.35 : 0.25}
-        animate={{ opacity: leisureActive ? [0.35, 0.5, 0.35] : 0.25 }}
-        transition={{ duration: 1.5, repeat: leisureActive ? Infinity : 0 }}
+        x="28"
+        y="30"
+        width="44"
+        height="40"
+        rx="3"
+        fill="url(#grass-zone)"
+        stroke={centroActive ? "#FF6A00" : "#5a8f65"}
+        strokeWidth={centroActive ? 0.8 : 0.4}
+        filter={centroActive ? "url(#block-glow)" : undefined}
+        animate={{ opacity: centroActive ? [0.85, 1, 0.85] : 0.9 }}
+        transition={{ duration: 1.5, repeat: centroActive ? Infinity : 0 }}
       />
 
-      {/* Piscina */}
-      <ellipse
-        cx="34"
-        cy="66"
-        rx="11"
-        ry="7"
-        fill="url(#pool-water)"
-        opacity={activeId === "pool" ? 1 : 0.85}
-        filter="url(#soft-shadow)"
-      />
-      <ellipse cx="34" cy="66" rx="8" ry="5" fill="#7dd3fc" opacity="0.4" />
+      {/* Piscina central */}
+      <ellipse cx="42" cy="48" rx="9" ry="6" fill="url(#pool-fill)" opacity="0.9" filter="url(#map-shadow)" />
+      <ellipse cx="42" cy="48" rx="6" ry="4" fill="#7dd3fc" opacity="0.35" />
 
-      {/* Academia */}
-      <rect
-        x="44"
-        y="58"
-        width="14"
-        height="10"
-        rx="1"
-        fill="#475569"
-        opacity={activeId === "gym" ? 1 : 0.8}
-        filter="url(#soft-shadow)"
-      />
+      {/* Deck / praça */}
+      <rect x="54" y="42" width="12" height="8" rx="1" fill="#c4a882" opacity="0.55" />
+      <rect x="36" y="58" width="10" height="6" rx="0.5" fill="#8b7355" opacity="0.4" />
 
-      {/* Playground */}
-      <circle cx="72" cy="68" r="5" fill="#f59e0b" opacity={activeId === "playground" ? 1 : 0.7} />
-      <rect x="69" y="66" width="6" height="1" fill="#d97706" rx="0.5" />
+      {/* Árvores decorativas */}
+      {[
+        [26, 55], [74, 55], [30, 62], [70, 62], [50, 66],
+      ].map(([cx, cy], i) => (
+        <g key={i} opacity="0.55">
+          <circle cx={cx} cy={cy} r="2.2" fill="#3d6b4f" />
+          <circle cx={cx} cy={cy - 0.8} r="1.4" fill="#5a9e6a" />
+        </g>
+      ))}
 
-      {/* Coworking & Salão */}
-      <rect x="18" y="78" width="16" height="8" rx="1" fill="#78716c" opacity={activeId === "coworking" ? 1 : 0.75} />
-      <rect x="54" y="78" width="18" height="8" rx="1" fill="#a16207" opacity={activeId === "party" ? 1 : 0.75} />
-
-      {/* Caminhos */}
-      <path d="M 50 48 L 50 95 M 20 70 L 80 70" stroke="url(#path)" strokeWidth="2.5" fill="none" opacity="0.6" />
-      <ellipse cx="50" cy="50" rx="8" ry="5" fill="url(#path)" opacity="0.5" />
-
-      {/* Torres */}
-      {towers.map((tower) => {
-        const active = isTowerActive(tower.id);
+      {/* Blocos / torres */}
+      {bolotarios.map((b) => {
+        const active = activeId === b.id;
         return (
-          <g key={tower.id} filter={active ? "url(#tower-glow)" : "url(#soft-shadow)"}>
+          <g key={b.id} filter={active ? "url(#block-glow)" : "url(#map-shadow)"}>
             <rect
-              x={tower.x}
-              y={tower.y}
-              width={tower.w}
-              height={tower.h}
-              rx="1.5"
-              fill={active ? "#FF6A00" : "#2d3748"}
-              stroke={active ? "#FF8533" : "#1a202c"}
-              strokeWidth={active ? 0.6 : 0.3}
+              x={b.x}
+              y={b.y}
+              width={b.w}
+              height={b.h}
+              rx="1"
+              fill={active ? "#FF6A00" : "#3d4f5f"}
+              stroke={active ? "#FF8533" : "#2d3748"}
+              strokeWidth={active ? 0.6 : 0.35}
             />
-            {/* Detalhes do telhado */}
+            {/* Cobertura */}
             <rect
-              x={tower.x + 1}
-              y={tower.y + 1}
-              width={tower.w - 2}
-              height={3}
-              rx="0.5"
+              x={b.x + 0.8}
+              y={b.y + 0.8}
+              width={b.w - 1.6}
+              height={2.5}
+              rx="0.4"
               fill={active ? "#FF8533" : "#4a5568"}
-              opacity="0.8"
+              opacity="0.85"
             />
             {/* Janelas */}
             {Array.from({ length: 3 }).map((_, row) =>
               Array.from({ length: 2 }).map((_, col) => (
                 <rect
-                  key={`${row}-${col}`}
-                  x={tower.x + 4 + col * (tower.w / 2 - 2)}
-                  y={tower.y + 6 + row * 8}
-                  width={tower.w / 2 - 5}
-                  height={4}
-                  rx="0.3"
+                  key={`${b.id}-${row}-${col}`}
+                  x={b.x + 2.5 + col * (b.w / 2 - 1.5)}
+                  y={b.y + 4.5 + row * 4.5}
+                  width={b.w / 2 - 3.5}
+                  height={2.8}
+                  rx="0.2"
                   fill={active ? "#fff" : "#718096"}
-                  opacity={active ? 0.9 : 0.5}
+                  opacity={active ? 0.85 : 0.45}
                 />
               ))
             )}
@@ -295,278 +180,257 @@ function ImplantationSVG({ activeId }: { activeId: HighlightId }) {
         );
       })}
 
-      {/* Norte */}
-      <g opacity="0.4">
-        <polygon points="50,6 52,10 48,10" fill="#121212" />
-        <text x="50" y="14" textAnchor="middle" fontSize="3" fill="#121212" fontFamily="system-ui">
-          N
-        </text>
+      {/* Bússola */}
+      <g opacity="0.45" transform="translate(88, 8)">
+        <circle r="4" fill="white" stroke="#121212" strokeWidth="0.3" />
+        <polygon points="0,-3 1,1 -1,1" fill="#FF6A00" />
+        <text y="6" textAnchor="middle" fontSize="2.5" fill="#121212" fontFamily="system-ui">N</text>
+      </g>
+
+      {/* Escala */}
+      <g opacity="0.35" transform="translate(6, 92)">
+        <line x1="0" y1="0" x2="12" y2="0" stroke="#121212" strokeWidth="0.5" />
+        <text x="6" y="-1.5" textAnchor="middle" fontSize="2" fill="#121212" fontFamily="system-ui">50m</text>
       </g>
     </svg>
   );
 }
 
-function TowerCard({ tower }: { tower: Tower }) {
+function BolotarioPin({
+  bolotario,
+  isActive,
+  isAuto,
+  onHover,
+  onLeave,
+}: {
+  bolotario: Bolotario;
+  isActive: boolean;
+  isAuto: boolean;
+  onHover: () => void;
+  onLeave: () => void;
+}) {
+  const cx = bolotario.x + bolotario.w / 2;
+  const cy = bolotario.y + bolotario.h / 2;
+  const highlighted = isActive || isAuto;
+
+  return (
+    <button
+      type="button"
+      className={`absolute z-20 -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ${
+        isAuto && !isActive ? "scale-110" : ""
+      }`}
+      style={{ left: `${cx}%`, top: `${cy}%` }}
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      aria-label={`Bloco ${bolotario.id} — ${bolotario.torre}`}
+    >
+      <div
+        className={`relative w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+          highlighted
+            ? "bg-orange text-white shadow-lg shadow-orange/50 ring-4 ring-orange/25 scale-110"
+            : "bg-white text-black shadow-md ring-2 ring-black/10 hover:bg-orange hover:text-white hover:ring-orange/30"
+        }`}
+      >
+        {bolotario.id}
+        {highlighted && (
+          <span className="absolute inset-0 rounded-full border-2 border-orange opacity-50 scale-125" />
+        )}
+      </div>
+    </button>
+  );
+}
+
+function BolotarioCard({ bolotario }: { bolotario: Bolotario }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+      initial={{ opacity: 0, y: 10, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className="absolute z-30 w-52 bg-black/90 backdrop-blur-md border border-orange/30 rounded-xl p-4 shadow-2xl shadow-orange/20 pointer-events-none"
+      exit={{ opacity: 0, y: 10, scale: 0.96 }}
+      transition={{ duration: 0.25 }}
+      className="absolute z-30 w-56 bg-black/92 backdrop-blur-md border border-orange/30 rounded-xl p-4 shadow-2xl shadow-orange/15 pointer-events-none"
       style={{
-        left: `${tower.x + tower.w / 2}%`,
-        top: `${tower.y - 4}%`,
-        transform: "translate(-50%, -100%)",
+        left: `${bolotario.x + bolotario.w / 2}%`,
+        top: `${bolotario.y}%`,
+        transform: "translate(-50%, -108%)",
       }}
     >
-      <p className="text-orange text-xs font-bold uppercase tracking-widest mb-1">{tower.label}</p>
-      <p className="text-white font-bold text-lg leading-tight mb-2">
-        {tower.floors} Andares · {tower.units} Unidades
+      <div className="flex items-center gap-3 mb-2">
+        <span className="w-8 h-8 rounded-full bg-orange text-white font-bold text-sm flex items-center justify-center flex-shrink-0">
+          {bolotario.id}
+        </span>
+        <div>
+          <p className="text-orange text-[10px] font-bold uppercase tracking-widest">{bolotario.label}</p>
+          <p className="text-white font-semibold text-sm leading-tight">{bolotario.torre}</p>
+        </div>
+      </div>
+      <p className="text-white/70 text-xs mb-2">
+        {bolotario.floors} andares · {bolotario.units} unidades · {bolotario.bedrooms}
       </p>
-      <p className="text-white/60 text-sm mb-3">{tower.bedrooms}</p>
-      <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-orange/20 text-orange border border-orange/30">
-        {tower.status}
+      <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange/20 text-orange border border-orange/30">
+        {bolotario.status}
       </span>
     </motion.div>
   );
 }
 
-function HotspotCard({ hotspot }: { hotspot: Hotspot }) {
-  const Icon = hotspot.icon;
+function CentroCard() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+      initial={{ opacity: 0, y: 10, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className="absolute z-30 w-56 bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/20 pointer-events-none"
-      style={{
-        left: `${hotspot.x}%`,
-        top: `${hotspot.y}%`,
-        transform: "translate(-50%, -110%)",
-      }}
+      exit={{ opacity: 0, y: 10, scale: 0.96 }}
+      transition={{ duration: 0.25 }}
+      className="absolute z-30 left-1/2 top-[38%] -translate-x-1/2 -translate-y-full w-52 bg-black/92 backdrop-blur-md border border-orange/30 rounded-xl p-4 shadow-2xl pointer-events-none"
     >
-      <div className={`h-28 bg-gradient-to-br ${hotspot.gradient} relative`}>
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute bottom-3 left-3 flex items-center gap-2">
-          <div className="w-8 h-8 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center">
-            <Icon className="w-4 h-4 text-white" strokeWidth={1.5} />
-          </div>
-          <span className="text-white font-bold text-sm">{hotspot.label}</span>
-        </div>
-      </div>
-      <p className="p-3 text-sm text-black/70 leading-snug">{hotspot.description}</p>
+      <p className="text-orange text-[10px] font-bold uppercase tracking-widest mb-1">Área Central</p>
+      <p className="text-white font-semibold text-sm mb-2">Clube & Lazer</p>
+      <p className="text-white/60 text-xs leading-relaxed">
+        Piscina, deck, praça de convivência e circulação entre os 9 blocos.
+      </p>
     </motion.div>
   );
 }
 
-function HotspotPin({
-  hotspot,
-  isActive,
-  isAuto,
-  onHover,
-  onLeave,
-}: {
-  hotspot: Hotspot;
-  isActive: boolean;
-  isAuto: boolean;
-  onHover: () => void;
-  onLeave: () => void;
-}) {
-  const Icon = hotspot.icon;
-  return (
-    <motion.button
-      className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
-      style={{ left: `${hotspot.x}%`, top: `${hotspot.y}%` }}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      animate={isActive || isAuto ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-      transition={{ duration: 1.2, repeat: isAuto ? Infinity : 0 }}
-    >
-      <div
-        className={`relative w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-          isActive || isAuto
-            ? "bg-orange shadow-lg shadow-orange/50 ring-4 ring-orange/30"
-            : "bg-white shadow-md ring-2 ring-orange/20 hover:bg-orange hover:ring-orange/40"
-        }`}
-      >
-        <Icon
-          className={`w-3.5 h-3.5 transition-colors ${isActive || isAuto ? "text-white" : "text-orange"}`}
-          strokeWidth={2}
-        />
-        {(isActive || isAuto) && (
-          <motion.span
-            className="absolute inset-0 rounded-full border-2 border-orange"
-            animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        )}
-      </div>
-    </motion.button>
-  );
-}
-
-function TowerPin({
-  tower,
-  isActive,
-  isAuto,
-  onHover,
-  onLeave,
-}: {
-  tower: Tower;
-  isActive: boolean;
-  isAuto: boolean;
-  onHover: () => void;
-  onLeave: () => void;
-}) {
-  return (
-    <motion.button
-      className="absolute z-20"
-      style={{
-        left: `${tower.x}%`,
-        top: `${tower.y}%`,
-        width: `${tower.w}%`,
-        height: `${tower.h}%`,
-      }}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      aria-label={tower.label}
-    >
-      {(isActive || isAuto) && (
-        <motion.div
-          className="absolute inset-0 rounded-sm border-2 border-orange"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
-        />
-      )}
-    </motion.button>
-  );
-}
-
-function TabletMockup({
-  activeId,
+function ImplantationMapDisplay({
+  displayId,
   hoveredId,
   autoId,
-  onTowerHover,
-  onTowerLeave,
-  onHotspotHover,
-  onHotspotLeave,
+  onBolotarioHover,
+  onBolotarioLeave,
+  onCentroHover,
+  onCentroLeave,
 }: {
-  activeId: HighlightId;
+  displayId: HighlightId;
   hoveredId: HighlightId;
   autoId: HighlightId;
-  onTowerHover: (id: HighlightId) => void;
-  onTowerLeave: () => void;
-  onHotspotHover: (id: HighlightId) => void;
-  onHotspotLeave: () => void;
+  onBolotarioHover: (id: number) => void;
+  onBolotarioLeave: () => void;
+  onCentroHover: () => void;
+  onCentroLeave: () => void;
 }) {
-  const displayId = hoveredId ?? autoId;
-  const activeTower = towers.find((t) => t.id === displayId);
-  const activeHotspot = hotspots.find((h) => h.id === displayId);
+  const activeBolotario = typeof displayId === "number"
+    ? bolotarios.find((b) => b.id === displayId)
+    : undefined;
+  const showBolotarioCard =
+    activeBolotario &&
+    (hoveredId === activeBolotario.id || (!hoveredId && autoId === activeBolotario.id));
+  const showCentroCard =
+    displayId === "centro" && (hoveredId === "centro" || (!hoveredId && autoId === "centro"));
 
   return (
     <motion.div
-      className="relative perspective-1000 mx-auto w-full max-w-md"
-      animate={{ y: [0, -10, 0], rotateY: [-4, 4, -4] }}
-      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      className="relative mx-auto w-full max-w-3xl"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
     >
-      <div className="absolute -inset-8 bg-orange/10 rounded-full blur-3xl -z-10" />
+      <div
+        className="absolute -inset-10 rounded-full blur-3xl -z-10"
+        style={{ background: "radial-gradient(circle, rgba(255,106,0,0.12) 0%, transparent 70%)" }}
+      />
 
-      {/* iPad frame */}
-      <div className="relative bg-gradient-to-b from-gray-700 to-gray-900 rounded-[2rem] p-3 shadow-2xl shadow-black/40 border border-white/10">
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-600 rounded-full" />
-        <div className="bg-black rounded-[1.5rem] overflow-hidden aspect-[4/3] relative">
-          {/* Screen content */}
-          <div className="absolute inset-0 p-3">
-            <div className="relative w-full h-full rounded-lg overflow-hidden bg-[#3d6b4f] shadow-inner">
-              <ImplantationSVG activeId={displayId} />
+      {/* Tela totem — mapa em destaque */}
+      <div className="relative bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 rounded-2xl p-3 shadow-2xl shadow-black/30 border border-white/10">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-500 rounded-full" />
 
-              {towers.map((tower) => (
-                <TowerPin
-                  key={tower.id}
-                  tower={tower}
-                  isActive={hoveredId === tower.id}
-                  isAuto={!hoveredId && autoId === tower.id}
-                  onHover={() => onTowerHover(tower.id)}
-                  onLeave={onTowerLeave}
-                />
-              ))}
+        <div className="bg-[#eef0ea] rounded-xl overflow-hidden aspect-[4/3] relative">
+          {/* Barra */}
+          <div className="absolute top-0 left-0 right-0 h-9 bg-black/80 backdrop-blur-md flex items-center justify-between px-4 z-20 border-b border-white/5">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-orange" />
+              <span className="text-white/80 text-[11px] font-medium tracking-wide">
+                PoligonoApp · Mapa de Implantação
+              </span>
+            </div>
+            <span className="text-[10px] text-white/40 font-mono">9 BLOCOs</span>
+          </div>
 
-              {hotspots.map((hotspot) => (
-                <HotspotPin
-                  key={hotspot.id}
-                  hotspot={hotspot}
-                  isActive={hoveredId === hotspot.id}
-                  isAuto={!hoveredId && autoId === hotspot.id}
-                  onHover={() => onHotspotHover(hotspot.id)}
-                  onLeave={onHotspotLeave}
+          {/* Mapa central */}
+          <div className="absolute inset-0 pt-9 p-3">
+            <div className="relative w-full h-full rounded-lg overflow-hidden border border-black/10 shadow-inner bg-[#e8ebe4]">
+              <MasterPlanSVG activeId={displayId} />
+
+              {/* Hotspot área central */}
+              <button
+                className="absolute z-10 rounded-lg border-2 border-transparent hover:border-orange/40 transition-colors"
+                style={{ left: "28%", top: "30%", width: "44%", height: "40%" }}
+                onMouseEnter={onCentroHover}
+                onMouseLeave={onCentroLeave}
+                aria-label="Área central de lazer"
+              />
+
+              {bolotarios.map((b) => (
+                <BolotarioPin
+                  key={b.id}
+                  bolotario={b}
+                  isActive={hoveredId === b.id}
+                  isAuto={!hoveredId && autoId === b.id}
+                  onHover={() => onBolotarioHover(b.id)}
+                  onLeave={onBolotarioLeave}
                 />
               ))}
 
               <AnimatePresence>
-                {activeTower &&
-                  (hoveredId === activeTower.id ||
-                    (!hoveredId && autoId === activeTower.id)) && (
-                    <TowerCard key={activeTower.id} tower={activeTower} />
-                  )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {activeHotspot && hoveredId === activeHotspot.id && (
-                  <HotspotCard key={activeHotspot.id} hotspot={activeHotspot} />
+                {showBolotarioCard && activeBolotario && (
+                  <BolotarioCard key={activeBolotario.id} bolotario={activeBolotario} />
                 )}
+                {showCentroCard && <CentroCard key="centro" />}
               </AnimatePresence>
             </div>
           </div>
-
-          {/* UI chrome */}
-          <div className="absolute top-0 left-0 right-0 h-8 bg-black/60 backdrop-blur-sm flex items-center px-4 gap-2">
-            <div className="w-2 h-2 rounded-full bg-orange" />
-            <span className="text-white/80 text-[10px] font-medium tracking-wide">
-              PoligonoApp · Implantação
-            </span>
-          </div>
         </div>
+
+        <div className="mx-auto mt-2 w-28 h-1.5 bg-gradient-to-b from-gray-700 to-gray-900 rounded-b-lg" />
+        <div className="mx-auto w-44 h-1 bg-gray-800 rounded-full" />
+      </div>
+
+      {/* Legenda bolotários */}
+      <div className="flex flex-wrap justify-center gap-2 mt-6">
+        {bolotarios.map((b) => {
+          const active = displayId === b.id;
+          return (
+            <span
+              key={b.id}
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-300 ${
+                active
+                  ? "bg-orange text-white shadow-md shadow-orange/30 scale-110"
+                  : "bg-white text-black/60 border border-black/10"
+              }`}
+            >
+              {b.id}
+            </span>
+          );
+        })}
       </div>
     </motion.div>
   );
 }
 
 export default function InteractiveImplantationSection() {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref, active: motionActive } = useMotionActive({ threshold: 0.15 });
+  const inView = motionActive;
   const [hoveredId, setHoveredId] = useState<HighlightId>(null);
   const [autoIndex, setAutoIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const autoId = isPaused ? null : DEMO_SEQUENCE[autoIndex];
+  const autoId: HighlightId = isPaused ? null : DEMO_SEQUENCE[autoIndex];
+  const displayId = hoveredId ?? autoId;
 
   const advanceDemo = useCallback(() => {
     setAutoIndex((prev) => (prev + 1) % DEMO_SEQUENCE.length);
   }, []);
 
   useEffect(() => {
-    if (!inView || isPaused) return;
-    const timer = setInterval(advanceDemo, 2200);
+    if (!motionActive || isPaused) return;
+    const timer = setInterval(advanceDemo, 2800);
     return () => clearInterval(timer);
-  }, [inView, isPaused, advanceDemo, autoIndex]);
-
-  const handleHover = (id: HighlightId) => {
-    setIsPaused(true);
-    setHoveredId(id);
-  };
-
-  const handleLeave = () => {
-    setHoveredId(null);
-    setIsPaused(false);
-  };
+  }, [motionActive, isPaused, advanceDemo]);
 
   return (
     <div className="mb-24 relative" ref={ref}>
       <BlueprintBackground />
 
       <div className="relative grid lg:grid-cols-2 gap-12 lg:gap-16 items-center py-4">
-        {/* Texto */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -577,13 +441,13 @@ export default function InteractiveImplantationSection() {
             Implantação Interativa
           </p>
           <h3 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-            Explore o empreendimento{" "}
-            <span className="text-gradient">com apenas um toque</span>
+            Mapa central do{" "}
+            <span className="text-gradient">empreendimento completo</span>
           </h3>
           <p className="text-black/60 text-lg leading-relaxed mb-8">
-            Explore torres, áreas comuns, acessos e diferenciais através de uma
-            experiência interativa desenvolvida para impressionar clientes durante
-            a apresentação.
+            Visualize todos os blocos do empreendimento em um mapa interativo com
+            bolotários numerados de 1 a 9. Toque em cada torre para ver andares,
+            unidades e disponibilidade em tempo real.
           </p>
 
           <a href="#contato" className="btn-primary group mb-10 inline-flex gap-2">
@@ -591,7 +455,6 @@ export default function InteractiveImplantationSection() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
 
-          {/* Antes x Depois */}
           <div className="border border-black/8 rounded-2xl p-5 bg-white/80 backdrop-blur-sm">
             <p className="text-sm font-semibold text-black/50 uppercase tracking-widest mb-4">
               Muito além de uma planta impressa
@@ -602,20 +465,19 @@ export default function InteractiveImplantationSection() {
                   <FileText className="w-5 h-5 text-black/40" strokeWidth={1.5} />
                 </div>
                 <p className="text-sm font-medium text-black/50">PDF tradicional</p>
-                <p className="text-xs text-black/35 mt-1">Estático, desatualizado</p>
+                <p className="text-xs text-black/35 mt-1">Estático, sem interação</p>
               </div>
               <div className="rounded-xl bg-orange/5 p-4 border border-orange/20">
                 <div className="w-10 h-10 bg-orange/15 rounded-lg flex items-center justify-center mb-3">
-                  <Tablet className="w-5 h-5 text-orange" strokeWidth={1.5} />
+                  <Monitor className="w-5 h-5 text-orange" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm font-semibold text-black/80">PoligonoApp interativo</p>
-                <p className="text-xs text-orange mt-1">Torres, lazer e hotspots</p>
+                <p className="text-sm font-semibold text-black/80">Mapa interativo</p>
+                <p className="text-xs text-orange mt-1">9 blocos com bolotários</p>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Tablet 3D */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -626,31 +488,15 @@ export default function InteractiveImplantationSection() {
             setIsPaused(false);
           }}
         >
-          <TabletMockup
-            activeId={hoveredId ?? autoId}
+          <ImplantationMapDisplay
+            displayId={displayId}
             hoveredId={hoveredId}
             autoId={autoId}
-            onTowerHover={handleHover}
-            onTowerLeave={handleLeave}
-            onHotspotHover={handleHover}
-            onHotspotLeave={handleLeave}
+            onBolotarioHover={(id) => setHoveredId(id)}
+            onBolotarioLeave={() => setHoveredId(null)}
+            onCentroHover={() => setHoveredId("centro")}
+            onCentroLeave={() => setHoveredId(null)}
           />
-
-          {/* Legenda */}
-          <div className="flex flex-wrap justify-center gap-3 mt-6">
-            {hotspots.map((h) => {
-              const Icon = h.icon;
-              return (
-                <span
-                  key={h.id}
-                  className="inline-flex items-center gap-1.5 text-xs text-black/50 bg-white/80 px-2.5 py-1 rounded-full border border-black/5"
-                >
-                  <Icon className="w-3 h-3 text-orange" strokeWidth={2} />
-                  {h.label}
-                </span>
-              );
-            })}
-          </div>
         </motion.div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import InteractiveImplantationSection from "@/components/InteractiveImplantationSection";
@@ -9,11 +10,31 @@ import RegionalMapSection from "@/components/RegionalMapSection";
 import VirtualTourSection from "@/components/VirtualTourSection";
 
 const galleryImages = [
-  { id: 1, gradient: "from-slate-600 to-slate-800", label: "Fachada Principal" },
-  { id: 2, gradient: "from-blue-600 to-blue-800", label: "Área de Lazer" },
-  { id: 3, gradient: "from-emerald-600 to-emerald-800", label: "Suíte Master" },
-  { id: 4, gradient: "from-amber-600 to-amber-800", label: "Living Integrado" },
-  { id: 5, gradient: "from-rose-600 to-rose-800", label: "Terraço Gourmet" },
+  {
+    id: 1,
+    src: "/imagens/galeria-perspectivas/fachada.jpg",
+    label: "Fachada Principal",
+  },
+  {
+    id: 2,
+    src: "/imagens/galeria-perspectivas/area-de-lazer.webp",
+    label: "Área de Lazer",
+  },
+  {
+    id: 3,
+    src: "/imagens/galeria-perspectivas/suite-master.jpeg",
+    label: "Suíte Master",
+  },
+  {
+    id: 4,
+    src: "/imagens/galeria-perspectivas/living-integrado.jpg",
+    label: "Living Integrado",
+  },
+  {
+    id: 5,
+    src: "/imagens/galeria-perspectivas/terraco-gourmet.avif",
+    label: "Terraço Gourmet",
+  },
 ];
 
 export default function FeaturesSection() {
@@ -49,35 +70,37 @@ export default function FeaturesSection() {
           </div>
 
           <div className="relative overflow-hidden rounded-2xl">
-            <motion.div
-              animate={{ x: [0, -1200] }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="flex gap-6"
-            >
+            <div className={`flex w-max animate-marquee ${inView ? "" : "anim-paused"}`}>
               {[...galleryImages, ...galleryImages].map((img, i) => (
-                <motion.div
+                <div
                   key={`${img.id}-${i}`}
-                  className="flex-shrink-0 w-80 h-56 rounded-xl overflow-hidden relative cursor-pointer"
-                  onHoverStart={() => setHoveredGallery(i)}
-                  onHoverEnd={() => setHoveredGallery(null)}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.4 }}
+                  className="flex-shrink-0 w-80 h-56 mx-3 rounded-xl overflow-hidden relative cursor-pointer group"
+                  onMouseEnter={() => setHoveredGallery(i)}
+                  onMouseLeave={() => setHoveredGallery(null)}
                 >
-                  <div className={`w-full h-full bg-gradient-to-br ${img.gradient}`} />
-                  <motion.div
-                    className="absolute inset-0 bg-black/40 flex items-end p-4"
-                    animate={{ opacity: hoveredGallery === i ? 0.7 : 0.3 }}
+                  <Image
+                    src={img.src}
+                    alt={img.label}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="320px"
+                    loading="lazy"
+                  />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4 transition-opacity duration-300 ${
+                      hoveredGallery === i ? "opacity-100" : "opacity-60"
+                    }`}
                   >
                     <span className="text-white font-medium">{img.label}</span>
-                  </motion.div>
-                  <motion.div
-                    className="absolute inset-0 border-2 border-orange rounded-xl"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: hoveredGallery === i ? 1 : 0 }}
+                  </div>
+                  <div
+                    className={`absolute inset-0 border-2 border-orange rounded-xl pointer-events-none transition-opacity duration-300 ${
+                      hoveredGallery === i ? "opacity-100" : "opacity-0"
+                    }`}
                   />
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
 

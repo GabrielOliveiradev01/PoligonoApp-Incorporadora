@@ -23,17 +23,11 @@ export default function VisualImpactSection() {
   return (
     <section className="relative min-h-[70vh] flex items-center overflow-hidden" ref={ref}>
       <div className="absolute inset-0 bg-black">
-        <motion.div
+        <div
           className="absolute inset-0"
-          animate={{
-            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           style={{
-            backgroundImage: `
-              linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #16213e 100%)
-            `,
-            backgroundSize: "400% 400%",
+            backgroundImage:
+              "linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #1a1a2e 100%)",
           }}
         />
 
@@ -72,11 +66,10 @@ export default function VisualImpactSection() {
             className="absolute hidden md:block z-10"
             style={{ left: mockup.x, top: mockup.y }}
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={inView ? { opacity: 1, scale: 1, y: [0, -12, 0] } : {}}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{
               opacity: { duration: 0.6, delay: mockup.delay },
               scale: { duration: 0.6, delay: mockup.delay },
-              y: { duration: 5 + mockup.delay * 2, repeat: Infinity, ease: "easeInOut", delay: mockup.delay },
             }}
           >
             <div className="glass rounded-2xl p-5 w-36 backdrop-blur-lg">

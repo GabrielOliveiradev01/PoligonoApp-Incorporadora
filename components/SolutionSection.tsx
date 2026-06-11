@@ -155,11 +155,13 @@ const AUTO_ADVANCE_MS = 3500;
 
 function ScreenDisplay({
   active,
+  paused,
   selectedId,
   onSelect,
   onHoverChange,
 }: {
   active: boolean;
+  paused: boolean;
   selectedId: string;
   onSelect: (id: string) => void;
   onHoverChange: (hovered: boolean) => void;
@@ -167,25 +169,10 @@ function ScreenDisplay({
   const selected = appScreens.find((s) => s.id === selectedId) ?? appScreens[0];
 
   return (
-    <motion.div
-      className="relative perspective-1000 mx-auto w-full max-w-2xl"
+    <div
+      className={`relative mx-auto w-full max-w-2xl ${active && !paused ? "animate-float-subtle" : ""} ${paused ? "anim-paused" : ""}`}
       onMouseEnter={() => onHoverChange(true)}
       onMouseLeave={() => onHoverChange(false)}
-      animate={
-        active
-          ? {
-              y: [0, -10, 0],
-              rotateX: [6, 8, 6],
-              rotateY: [-3, 3, -3],
-            }
-          : {}
-      }
-      transition={{
-        y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-        rotateX: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-        rotateY: { duration: 7, repeat: Infinity, ease: "easeInOut" },
-      }}
-      style={{ transformStyle: "preserve-3d" }}
     >
       <div
         className="absolute -inset-12 rounded-full blur-3xl -z-10"
@@ -258,7 +245,7 @@ function ScreenDisplay({
         <div className="mx-auto mt-2 w-20 h-1.5 bg-gradient-to-b from-gray-700 to-gray-900 rounded-b-lg" />
         <div className="mx-auto w-32 h-1 bg-gray-800 rounded-full" />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -324,6 +311,7 @@ export default function SolutionSection() {
           >
             <ScreenDisplay
               active={inView}
+              paused={isPaused}
               selectedId={selectedId}
               onSelect={handleSelect}
               onHoverChange={setIsHovered}

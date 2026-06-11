@@ -8,9 +8,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PoligonoApp — Experiências de venda para corretores e incorporadoras",
+  title: "polígono tech — Apresentação de Empreendimentos",
   description:
-    "A plataforma que transforma empreendimentos em experiências de venda para corretores e incorporadoras. Plantas interativas, perspectivas, tour virtual e muito mais.",
+    "Aplicativos touch para incorporadoras apresentarem plantas, perspectivas, implantação, localização e tours virtuais em tablets, TVs e totens.",
+  icons: {
+    icon: "/imagens/logo-branca.png",
+    apple: "/imagens/logo-branca.png",
+  },
 };
 
 export default function RootLayout({

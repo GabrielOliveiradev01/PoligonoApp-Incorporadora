@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { useMotionActive } from "@/hooks/useMotionActive";
 import {
   Check,
   Play,
@@ -63,8 +63,6 @@ const features = [
   "Experiência Imersiva",
 ];
 
-const PANORAMA_DURATION = 18;
-
 function SceneVisual({
   sceneId,
   panOffset = 0,
@@ -115,11 +113,7 @@ function SceneVisual({
         <div className="absolute bottom-[20%] left-[5%] right-[5%] h-[35%] bg-cyan-500/35 rounded-[40%] blur-[2px]" />
         <div className="absolute bottom-[28%] left-[15%] right-[15%] h-[18%] bg-sky-400/30 rounded-full" />
         <div className="absolute top-[30%] left-[20%] w-[60%] h-[8%] bg-emerald-700/30 rounded-full" />
-        <motion.div
-          className="absolute bottom-[32%] left-[20%] right-[20%] h-1 bg-white/20 rounded-full"
-          animate={{ x: [-10, 10, -10] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
+        <div className="absolute bottom-[32%] left-[20%] right-[20%] h-1 bg-white/20 rounded-full opacity-60" />
       </div>
     );
   }
@@ -155,34 +149,10 @@ function Camera360View({
   paused: boolean;
 }) {
   return (
-    <div
-      className="absolute inset-0 overflow-hidden"
-      style={{ perspective: "900px" }}
-    >
-      {/* Panorama girando — simula câmera em 360° */}
-      <motion.div
-        className="absolute inset-y-0 h-full"
-        style={{
-          width: "350%",
-          left: "-125%",
-          transformStyle: "preserve-3d",
-        }}
-        animate={
-          paused
-            ? false
-            : {
-                x: ["0%", "-28.6%"],
-                rotateY: [4, -4, 4],
-              }
-        }
-        transition={{
-          x: { duration: PANORAMA_DURATION, repeat: Infinity, ease: "linear" },
-          rotateY: {
-            duration: PANORAMA_DURATION / 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          },
-        }}
+    <div className="absolute inset-0 overflow-hidden">
+      <div
+        className={`absolute inset-y-0 h-full animate-panorama-360 ${paused ? "anim-paused" : ""}`}
+        style={{ width: "300%", left: "-100%" }}
       >
         {[0, 1, 2].map((seg) => (
           <div
@@ -193,114 +163,17 @@ function Camera360View({
             <SceneVisual sceneId={sceneId} panOffset={seg * 0.4} />
           </div>
         ))}
-      </motion.div>
-
-      {/* Camada frontal com parallax */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-[5]"
-        animate={paused ? false : { x: ["3%", "-3%", "3%"] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <div className="absolute bottom-0 inset-x-0 h-[35%] bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-      </motion.div>
-
-      {/* Anel de horizonte girando */}
-      <motion.div
-        className="absolute left-1/2 top-[54%] -translate-x-1/2 -translate-y-1/2 w-[130%] aspect-square rounded-full border border-white/[0.07] pointer-events-none z-10"
-        animate={paused ? false : { rotate: 360 }}
-        transition={{
-          duration: PANORAMA_DURATION,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-      <motion.div
-        className="absolute left-1/2 top-[54%] -translate-x-1/2 -translate-y-1/2 w-[95%] aspect-square rounded-full border border-dashed border-white/[0.05] pointer-events-none z-10"
-        animate={paused ? false : { rotate: -360 }}
-        transition={{
-          duration: PANORAMA_DURATION * 1.4,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      {/* Retículo da câmera */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div className="relative w-20 h-20 opacity-25">
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-white/40" />
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/40" />
-          <div className="absolute inset-3 rounded-full border border-white/25" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange rounded-full" />
-        </div>
       </div>
 
-      {/* Flare de lente */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-10"
-        style={{
-          background:
-            "linear-gradient(108deg, transparent 42%, rgba(255,255,255,0.07) 50%, transparent 58%)",
-        }}
-        animate={paused ? false : { x: ["-120%", "220%"] }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "linear",
-          repeatDelay: 5,
-        }}
-      />
+      <div className="absolute bottom-0 inset-x-0 h-[35%] bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none z-[5]" />
 
-      {/* Vinheta tipo lente 360 */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            "radial-gradient(ellipse 75% 65% at 50% 48%, transparent 25%, rgba(0,0,0,0.8) 100%)",
+            "radial-gradient(ellipse 75% 65% at 50% 48%, transparent 25%, rgba(0,0,0,0.75) 100%)",
         }}
       />
-    </div>
-  );
-}
-
-function DegreeCounter({ paused }: { paused: boolean }) {
-  const [degrees, setDegrees] = useState(0);
-
-  useEffect(() => {
-    if (paused) return;
-    const step = 360 / (PANORAMA_DURATION * 10);
-    const timer = setInterval(() => {
-      setDegrees((d) => (d + step) % 360);
-    }, 100);
-    return () => clearInterval(timer);
-  }, [paused]);
-
-  return (
-    <span className="absolute text-[8px] text-orange font-mono font-bold">
-      {Math.round(degrees)}°
-    </span>
-  );
-}
-
-function Particles() {
-  const particles = Array.from({ length: 18 }, (_, i) => ({
-    id: i,
-    x: (i * 17 + 7) % 100,
-    y: (i * 23 + 11) % 100,
-    size: 2 + (i % 3),
-    delay: i * 0.3,
-  }));
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-orange/20"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-          animate={{ y: [0, -20, 0], opacity: [0.2, 0.6, 0.2] }}
-          transition={{ duration: 4 + p.delay, repeat: Infinity, delay: p.delay }}
-        />
-      ))}
     </div>
   );
 }
@@ -309,47 +182,29 @@ function ScreenDisplay({
   sceneIndex,
   entered,
   hovering,
+  motionActive,
   indicatorsVisible,
   activeIndicator,
 }: {
   sceneIndex: number;
   entered: boolean;
   hovering: boolean;
+  motionActive: boolean;
   indicatorsVisible: boolean;
   activeIndicator: string;
 }) {
   const scene = tourScenes[sceneIndex];
+  const panoramaPaused = hovering || !motionActive;
 
   return (
-    <motion.div
-      className="relative perspective-1000 mx-auto w-full max-w-2xl"
-      initial={{ opacity: 0, y: 60 }}
-      animate={
-        entered
-          ? {
-              opacity: 1,
-              y: hovering ? -6 : [0, -10, 0],
-              rotateX: hovering ? 4 : [6, 8, 6],
-              rotateY: hovering ? 0 : [-3, 3, -3],
-              scale: hovering ? 1.04 : 1,
-            }
-          : { opacity: 0, y: 60 }
-      }
-      transition={{
-        y: hovering ? { duration: 0.3 } : { duration: 5, repeat: Infinity, ease: "easeInOut" },
-        rotateX: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-        rotateY: { duration: 7, repeat: Infinity, ease: "easeInOut" },
-        scale: { duration: 0.35 },
-        opacity: { duration: 0.8 },
-      }}
-      style={{ transformStyle: "preserve-3d" }}
+    <div
+      className={`relative mx-auto w-full max-w-2xl transition-opacity duration-700 ${
+        entered ? "opacity-100" : "opacity-0 translate-y-8"
+      } ${motionActive && !hovering ? "animate-float-subtle" : ""} ${panoramaPaused ? "anim-paused" : ""}`}
     >
-      <motion.div
-        className="absolute -inset-16 rounded-full blur-3xl -z-10"
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={entered ? { opacity: 1, scale: 1 } : {}}
-        transition={{ duration: 1.2, delay: 0.3 }}
-        style={{ background: "radial-gradient(circle, rgba(255,106,0,0.35) 0%, transparent 70%)" }}
+      <div
+        className="absolute -inset-16 rounded-full blur-3xl -z-10 opacity-80"
+        style={{ background: "radial-gradient(circle, rgba(255,106,0,0.25) 0%, transparent 70%)" }}
       />
 
       <div
@@ -387,7 +242,7 @@ function ScreenDisplay({
                 <Camera360View
                   sceneId={scene.id}
                   gradient={scene.gradient}
-                  paused={hovering}
+                  paused={panoramaPaused}
                 />
               </motion.div>
             </AnimatePresence>
@@ -404,25 +259,13 @@ function ScreenDisplay({
           </div>
 
           <div className="absolute bottom-4 right-4 z-10">
-            <div className="relative w-14 h-14 rounded-full border border-white/20 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-              <motion.div
-                className="absolute w-11 h-11 rounded-full border-2 border-orange/60 border-t-transparent"
-                animate={hovering ? false : { rotate: 360 }}
-                transition={{ duration: PANORAMA_DURATION, repeat: Infinity, ease: "linear" }}
+            <div className="relative w-12 h-12 rounded-full border border-white/20 flex items-center justify-center bg-black/50">
+              <div
+                className={`absolute w-9 h-9 rounded-full border-2 border-orange/60 border-t-transparent animate-spin-slow ${
+                  panoramaPaused ? "anim-paused" : ""
+                }`}
               />
-              <motion.div
-                className="absolute w-7 h-7 rounded-full border border-white/15"
-                animate={hovering ? false : { rotate: -360 }}
-                transition={{
-                  duration: PANORAMA_DURATION * 0.6,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-              <DegreeCounter paused={hovering} />
-              <span className="absolute -bottom-4 text-[7px] text-white/50 font-bold tracking-wider">
-                360°
-              </span>
+              <span className="text-[8px] text-orange font-mono font-bold">360°</span>
             </div>
           </div>
 
@@ -439,21 +282,15 @@ function ScreenDisplay({
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 bg-black/45 backdrop-blur-[3px] z-30 flex items-center justify-center pt-9"
               >
-                <motion.button
-                  initial={{ scale: 0.9, y: 10 }}
-                  animate={{ scale: 1, y: 0 }}
+                <button
+                  type="button"
                   className="flex items-center gap-3 bg-orange text-white font-semibold text-base px-7 py-3.5 rounded-full shadow-xl shadow-orange/40"
                 >
-                  <span className="relative flex items-center justify-center w-10 h-10 bg-white/20 rounded-full">
+                  <span className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full">
                     <Play className="w-5 h-5 fill-white text-white ml-0.5" />
-                    <motion.span
-                      className="absolute inset-0 rounded-full border-2 border-white/40"
-                      animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                      transition={{ duration: 1.2, repeat: Infinity }}
-                    />
                   </span>
                   Iniciar Tour 360°
-                </motion.button>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -495,12 +332,13 @@ function ScreenDisplay({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
 export default function VirtualTourSection() {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref, active: motionActive } = useMotionActive({ threshold: 0.15 });
+  const inView = motionActive;
   const [entered, setEntered] = useState(false);
   const [sceneIndex, setSceneIndex] = useState(0);
   const [indicatorsVisible, setIndicatorsVisible] = useState(false);
@@ -517,12 +355,12 @@ export default function VirtualTourSection() {
   }, [inView]);
 
   useEffect(() => {
-    if (!entered) return;
+    if (!entered || !motionActive) return;
     const timer = setInterval(() => {
       setSceneIndex((prev) => (prev + 1) % tourScenes.length);
-    }, 3500);
+    }, 4000);
     return () => clearInterval(timer);
-  }, [entered]);
+  }, [entered, motionActive]);
 
   const sceneToIndicator: Record<string, string> = {
     living: "living",
@@ -541,7 +379,6 @@ export default function VirtualTourSection() {
       <div className="absolute bottom-1/4 -right-32 w-80 h-80 bg-orange/10 rounded-full blur-[80px]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-orange/10 rounded-full" />
-      <Particles />
 
       <div className="relative section-padding !py-20 md:!py-24">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -591,6 +428,7 @@ export default function VirtualTourSection() {
               sceneIndex={sceneIndex}
               entered={entered}
               hovering={hovering}
+              motionActive={motionActive}
               indicatorsVisible={indicatorsVisible}
               activeIndicator={activeIndicator}
             />

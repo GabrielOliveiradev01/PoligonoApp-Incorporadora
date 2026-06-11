@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+
+const LOGO_SRC = "/imagens/logo-branca.png";
 
 const navLinks = [
   { label: "Recursos", href: "#recursos" },
@@ -28,12 +31,16 @@ export default function Navbar() {
         scrolled ? "bg-black/90 backdrop-blur-md shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-20">
-        <a href="#" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-orange rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">P</span>
-          </div>
-          <span className="text-white font-bold text-xl">PoligonoApp</span>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-28 md:h-36 lg:h-40">
+        <a href="#" className="flex items-center flex-shrink-0">
+          <Image
+            src={LOGO_SRC}
+            alt="polígono tech — Apresentação de Empreendimentos"
+            width={1536}
+            height={1024}
+            className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto max-w-[min(100vw-8rem,28rem)] object-contain object-left"
+            priority
+          />
         </a>
 
         <div className="hidden md:flex items-center gap-8">
