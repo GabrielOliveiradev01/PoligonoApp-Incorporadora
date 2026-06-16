@@ -15,16 +15,16 @@ import {
 const tourScenes = [
   {
     id: "living",
-    label: "Apartamento Decorado",
-    indicator: "Apartamento Decorado",
+    label: "Apartamento decorado",
+    indicator: "Apartamento decorado",
     gradient: "from-amber-900/80 via-stone-800/60 to-amber-950/90",
     accent: "#d4a574",
     description: "Sala integrada · 360°",
   },
   {
     id: "varanda",
-    label: "Varanda Gourmet",
-    indicator: "Varanda Gourmet",
+    label: "Varanda gourmet",
+    indicator: "Varanda gourmet",
     gradient: "from-sky-900/70 via-slate-800/50 to-orange-900/80",
     accent: "#FF6A00",
     description: "Vista panorâmica · 360°",
@@ -51,16 +51,16 @@ const indicators = [
   { id: "pool", label: "Piscina", icon: Waves },
   { id: "gym", label: "Academia", icon: Dumbbell },
   { id: "party", label: "Salão de Festas", icon: PartyPopper },
-  { id: "living", label: "Apartamento Decorado", icon: Sofa },
+  { id: "living", label: "Apartamento decorado", icon: Sofa },
 ];
 
 const features = [
-  "Tour Virtual 360°",
-  "Ambientes Decorados",
-  "Áreas Comuns",
-  "Navegação Touch",
-  "Compatível com Tablets e Totens",
-  "Experiência Imersiva",
+  "Tour virtual 360°",
+  "Ambientes decorados",
+  "Áreas comuns",
+  "Navegação touch",
+  "Compatível com tablets e totens",
+  "Experiência imersiva",
 ];
 
 function SceneVisual({
@@ -289,7 +289,7 @@ function ScreenDisplay({
                   <span className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full">
                     <Play className="w-5 h-5 fill-white text-white ml-0.5" />
                   </span>
-                  Iniciar Tour 360°
+                  Iniciar tour 360°
                 </button>
               </motion.div>
             )}
@@ -396,8 +396,8 @@ export default function VirtualTourSection() {
               <span className="text-gradient">dentro do empreendimento</span>
             </h3>
             <p className="text-white/60 text-lg leading-relaxed mb-8">
-              Proporcione uma experiência imersiva onde o cliente explora ambientes,
-              áreas comuns e diferenciais do empreendimento através de tours virtuais
+              Proporcione uma experiência imersiva em que o cliente explora ambientes,
+              áreas comuns e diferenciais do empreendimento por meio de tours virtuais
               em 360°.
             </p>
 

@@ -298,7 +298,7 @@ export default function SolutionSection() {
               <span className="text-gradient">único aplicativo</span>
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              A PoligonoApp centraliza todas as informações do empreendimento em uma
+              O PoligonoApp centraliza todas as informações do empreendimento em uma
               experiência premium que encanta o cliente e acelera o fechamento.
             </p>
           </motion.div>

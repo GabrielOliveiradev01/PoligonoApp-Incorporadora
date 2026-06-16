@@ -265,7 +265,7 @@ export default function RegionalMapSection() {
           </h3>
           <p className="text-black/60 text-lg leading-relaxed mb-8">
             Apresente escolas, hospitais, parques, comércios e acessos estratégicos
-            através de um mapa interativo desenvolvido para valorizar cada
+            por meio de um mapa interativo desenvolvido para valorizar cada
             empreendimento.
           </p>
 
@@ -386,7 +386,7 @@ export default function RegionalMapSection() {
                     <div className="flex items-center gap-2 bg-black/90 backdrop-blur-md text-white px-3 py-2 rounded-xl shadow-xl border border-orange/30">
                       <Building2 className="w-4 h-4 text-orange" strokeWidth={2} />
                       <div>
-                        <p className="text-[11px] font-bold leading-tight">Seu Empreendimento</p>
+                        <p className="text-[11px] font-bold leading-tight">Seu empreendimento</p>
                         <p className="text-[9px] text-white/50">Localização privilegiada</p>
                       </div>
                     </div>

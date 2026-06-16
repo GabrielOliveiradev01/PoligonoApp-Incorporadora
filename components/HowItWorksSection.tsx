@@ -20,7 +20,7 @@ const steps = [
   {
     number: "3",
     title: "Publicamos seu aplicativo",
-    description: "O aplicativo fica instalado na aba.",
+    description: "O aplicativo fica instalado no tablet ou totem.",
     items: [],
   },
   {
@@ -44,7 +44,7 @@ export default function HowItWorksSection() {
           className="text-center mb-16"
         >
           <p className="text-orange font-semibold text-sm uppercase tracking-widest mb-4">
-            Como Funciona
+            Como funciona
           </p>
           <h2 className="section-title">
             Do material ao fechamento em{" "}

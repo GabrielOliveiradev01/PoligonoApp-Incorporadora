@@ -11,7 +11,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src={HERO_BG}
-          alt="Corretor apresentando empreendimento com PoligonoApp em totem digital"
+          alt="Corretor apresentando empreendimento com o PoligonoApp em totem digital"
           fill
           priority
           className="object-cover object-center"
@@ -35,16 +35,16 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg md:text-xl text-white/75 mb-10 leading-relaxed">
-            Aplicativos touch para incorporadoras apresentarem plantas, perspectivas,
+            Aplicativos touch que permitem às incorporadoras apresentar plantas, perspectivas,
             implantação, localização e tours virtuais em tablets, TVs e totens.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <a href="#contato" className="btn-primary">
-              Solicitar Demonstração
+              Solicitar demonstração
             </a>
             <a href="#recursos" className="btn-secondary">
-              Ver Apresentação
+              Ver apresentação
             </a>
           </div>
         </motion.div>

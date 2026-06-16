@@ -283,7 +283,7 @@ function CentroCard() {
       className="absolute z-30 left-1/2 top-[38%] -translate-x-1/2 -translate-y-full w-52 bg-black/92 backdrop-blur-md border border-orange/30 rounded-xl p-4 shadow-2xl pointer-events-none"
     >
       <p className="text-orange text-[10px] font-bold uppercase tracking-widest mb-1">Área Central</p>
-      <p className="text-white font-semibold text-sm mb-2">Clube & Lazer</p>
+      <p className="text-white font-semibold text-sm mb-2">Clube e lazer</p>
       <p className="text-white/60 text-xs leading-relaxed">
         Piscina, deck, praça de convivência e circulação entre os 9 blocos.
       </p>
@@ -342,7 +342,7 @@ function ImplantationMapDisplay({
                 PoligonoApp · Mapa de Implantação
               </span>
             </div>
-            <span className="text-[10px] text-white/40 font-mono">9 BLOCOs</span>
+            <span className="text-[10px] text-white/40 font-mono">9 BLOCOS</span>
           </div>
 
           {/* Mapa central */}
@@ -446,12 +446,12 @@ export default function InteractiveImplantationSection() {
           </h3>
           <p className="text-black/60 text-lg leading-relaxed mb-8">
             Visualize todos os blocos do empreendimento em um mapa interativo com
-            bolotários numerados de 1 a 9. Toque em cada torre para ver andares,
+            marcadores numerados de 1 a 9. Toque em cada torre para ver andares,
             unidades e disponibilidade em tempo real.
           </p>
 
           <a href="#contato" className="btn-primary group mb-10 inline-flex gap-2">
-            Ver Demonstração
+            Ver demonstração
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
 
@@ -472,7 +472,7 @@ export default function InteractiveImplantationSection() {
                   <Monitor className="w-5 h-5 text-orange" strokeWidth={1.5} />
                 </div>
                 <p className="text-sm font-semibold text-black/80">Mapa interativo</p>
-                <p className="text-xs text-orange mt-1">9 blocos com bolotários</p>
+                <p className="text-xs text-orange mt-1">9 blocos com marcadores</p>
               </div>
             </div>
           </div>

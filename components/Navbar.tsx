@@ -8,7 +8,7 @@ const LOGO_SRC = "/imagens/logo-branca.png";
 
 const navLinks = [
   { label: "Recursos", href: "#recursos" },
-  { label: "Como Funciona", href: "#como-funciona" },
+  { label: "Como funciona", href: "#como-funciona" },
   { label: "Depoimentos", href: "#depoimentos" },
 ];
 
@@ -31,14 +31,14 @@ export default function Navbar() {
         scrolled ? "bg-black/90 backdrop-blur-md shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-28 md:h-36 lg:h-40">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20 lg:h-24">
         <a href="#" className="flex items-center flex-shrink-0">
           <Image
             src={LOGO_SRC}
-            alt="polígono tech — Apresentação de Empreendimentos"
+            alt="polígono tech — apresentação de empreendimentos"
             width={1536}
             height={1024}
-            className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto max-w-[min(100vw-8rem,28rem)] object-contain object-left"
+            className="h-12 sm:h-14 md:h-16 lg:h-20 w-auto max-w-[min(100vw-8rem,28rem)] object-contain object-left"
             priority
           />
         </a>
@@ -54,7 +54,7 @@ export default function Navbar() {
             </a>
           ))}
           <a href="#contato" className="btn-primary text-sm !py-3 !px-6">
-            Solicitar Demonstração
+            Solicitar demonstração
           </a>
         </div>
 
@@ -93,7 +93,7 @@ export default function Navbar() {
                 </a>
               ))}
               <a href="#contato" className="btn-primary text-center text-sm !py-3">
-                Solicitar Demonstração
+                Solicitar demonstração
               </a>
             </div>
           </motion.div>

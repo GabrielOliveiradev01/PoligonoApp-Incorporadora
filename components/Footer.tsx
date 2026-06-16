@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="flex items-center">
             <Image
               src={LOGO_SRC}
-              alt="polígono tech — Apresentação de Empreendimentos"
+              alt="polígono tech — apresentação de empreendimentos"
               width={1536}
               height={1024}
               className="h-24 md:h-28 lg:h-32 w-auto max-w-full object-contain"
@@ -22,7 +22,7 @@ export default function Footer() {
               Recursos
             </a>
             <a href="#como-funciona" className="hover:text-orange transition-colors">
-              Como Funciona
+              Como funciona
             </a>
             <a href="#contato" className="hover:text-orange transition-colors">
               Contato

@@ -31,7 +31,7 @@ export default function CTASection() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:contato@poligonoapp.com.br" className="btn-primary">
-              Solicitar Demonstração
+              Solicitar demonstração
             </a>
             <a
               href="https://wa.me/5500000000000"
@@ -39,7 +39,7 @@ export default function CTASection() {
               rel="noopener noreferrer"
               className="btn-secondary"
             >
-              Falar com Especialista
+              Falar com especialista
             </a>
           </div>
         </motion.div>

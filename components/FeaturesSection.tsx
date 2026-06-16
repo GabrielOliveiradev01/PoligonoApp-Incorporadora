@@ -13,27 +13,27 @@ const galleryImages = [
   {
     id: 1,
     src: "/imagens/galeria-perspectivas/fachada.jpg",
-    label: "Fachada Principal",
+    label: "Fachada principal",
   },
   {
     id: 2,
     src: "/imagens/galeria-perspectivas/area-de-lazer.webp",
-    label: "Área de Lazer",
+    label: "Área de lazer",
   },
   {
     id: 3,
     src: "/imagens/galeria-perspectivas/suite-master.jpeg",
-    label: "Suíte Master",
+    label: "Suíte master",
   },
   {
     id: 4,
     src: "/imagens/galeria-perspectivas/living-integrado.jpg",
-    label: "Living Integrado",
+    label: "Living integrado",
   },
   {
     id: 5,
     src: "/imagens/galeria-perspectivas/terraco-gourmet.avif",
-    label: "Terraço Gourmet",
+    label: "Terraço gourmet",
   },
 ];
 
@@ -62,7 +62,7 @@ export default function FeaturesSection() {
         <div className="mb-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-8">
             <div>
-              <h3 className="text-2xl md:text-3xl font-bold mb-4">Galeria de Perspectivas</h3>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">Galeria de perspectivas</h3>
               <p className="text-black/60 text-lg">
                 Apresente imagens renderizadas de alta qualidade para encantar seus clientes.
               </p>

@@ -28,7 +28,7 @@ interface Room {
 const rooms: Room[] = [
   {
     id: "suite",
-    label: "Suíte Master",
+    label: "Suíte master",
     description: "Suíte ampla com closet integrado, banheiro privativo e iluminação natural.",
     area: "18,4 m²",
     cx: 78,
@@ -36,7 +36,7 @@ const rooms: Room[] = [
   },
   {
     id: "varanda",
-    label: "Varanda Gourmet",
+    label: "Varanda gourmet",
     description: "Varanda com churrasqueira, bancada gourmet e vista privilegiada.",
     area: "12,2 m²",
     cx: 78,
@@ -44,7 +44,7 @@ const rooms: Room[] = [
   },
   {
     id: "living",
-    label: "Living Integrado",
+    label: "Living integrado",
     description: "Ambiente social amplo integrado à cozinha, ideal para receber.",
     area: "32,8 m²",
     cx: 38,
@@ -62,7 +62,7 @@ const rooms: Room[] = [
 
 const features = [
   "Zoom inteligente",
-  "Navegação Touch",
+  "Navegação touch",
   "Visualização em tela cheia",
   "Comparação de plantas",
   "Experiência otimizada para tablets e totens",
@@ -295,7 +295,7 @@ function FloorPlanModal({
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
             <div>
               <p className="text-orange text-xs font-bold uppercase tracking-widest">PoligonoApp</p>
-              <p className="text-white font-semibold">Planta Interativa · 3 Dormitórios · 98m²</p>
+              <p className="text-white font-semibold">Planta interativa · 3 dormitórios · 98 m²</p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -433,7 +433,7 @@ function TabletPreview({
           <div className="absolute top-0 left-0 right-0 h-7 bg-black/70 backdrop-blur-sm flex items-center px-3 z-10">
             <div className="w-1.5 h-1.5 rounded-full bg-orange mr-2" />
             <span className="text-white/70 text-[9px] font-medium tracking-wide">
-              PoligonoApp · Planta 98m²
+              PoligonoApp · Planta 98 m²
             </span>
           </div>
 
@@ -489,7 +489,7 @@ function TabletPreview({
                 className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-orange text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg shadow-orange/30 hover:bg-orange-dark transition-colors"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
-                Explorar Ambientes
+                Explorar ambientes
               </motion.button>
             )}
           </AnimatePresence>
@@ -500,9 +500,9 @@ function TabletPreview({
 }
 
 const roomIcons = [
-  { icon: Bed, label: "Suíte Master" },
-  { icon: Sun, label: "Varanda Gourmet" },
-  { icon: Sofa, label: "Living Integrado" },
+  { icon: Bed, label: "Suíte master" },
+  { icon: Sun, label: "Varanda gourmet" },
+  { icon: Sofa, label: "Living integrado" },
   { icon: ChefHat, label: "Cozinha" },
 ];
 
@@ -601,7 +601,7 @@ export default function HumanizedFloorPlanSection() {
               onClick={() => setModalOpen(true)}
               className="btn-outline-dark group inline-flex gap-2"
             >
-              Visualizar Planta Interativa
+              Visualizar planta interativa
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
